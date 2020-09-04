@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix="bank-account-service")
+@ConfigurationProperties(prefix="library-service")
 public class ConfigModel {
 
 	private Double minBalance;
