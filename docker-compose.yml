@@ -1,0 +1,36 @@
+version: '3'
+services:
+  discovery:
+    image: developer.okta.com/microservice-docker-discovery:0.0.1-SNAPSHOT
+    ports:
+      - 8761:8761
+  config-server:
+    image: micro.com/config-server:0.0.1-SNAPSHOT
+    volumes:
+      - ./configuration:/var/config-data
+    environment:
+      - JAVA_OPTS=
+         -DEUREKA_SERVER=http://discovery:8761/eureka
+         -Dspring.cloud.config.server.native.searchLocations=/var/config-data
+    depends_on:
+      - discovery
+    ports:
+      - 8888:8888
+  library-service:
+    image: micro.com/library-service:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+	restart: on-failure
+    depends_on:
+      - discovery
+      - config-server
+  library-ui:
+    image: micro.com/library-ui:0.0.1-SNAPSHOT
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+    depends_on:
+      - discovery
+    ports:
+      - 8082:8082
